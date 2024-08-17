@@ -1,1 +1,4 @@
 ansible==10.1.0
+ansible-lint == 6.*
+molecule == 6.0.2
+molecule-plugins[docker] == 23.*

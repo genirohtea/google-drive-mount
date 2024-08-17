@@ -1,0 +1,16 @@
+---
+- name: gdrive
+  properties:
+    type: drive
+    client_id: {{ gdrive_client_id }}
+    client_secret: {{ gdrive_client_secret }}
+    token: {{  gdrive_token | string  | quote }}
+{% for folder_name in folder_names %}
+- name: encrypted-gdrive-{{ folder_name | replace('/', '__') }}
+  properties:
+    type: crypt
+    remote: gdrive:/rclone/{{ site }}/{{ deploy_env }}/{{ folder_name }}
+    filename_encryption: standard
+    password: {{ gdrive_password }}
+    password2: {{ gdrive_password_salt }}
+{% endfor %}

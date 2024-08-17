@@ -1,0 +1,8 @@
+{% for folder_name in folder_names %}
+- name: "{{ folder_name | replace('/', '__') }}"
+  remote_name: encrypted-gdrive-{{ folder_name | replace('/', '__') }}
+  remote_path: "/" # Relative to encrypted path
+  local_path: "/mnt/gdrive/rclone/{{ site }}/{{ deploy_env }}/{{ folder_name }}"
+  auto_mount: true
+  extra_args: "--allow-other"
+{% endfor %}

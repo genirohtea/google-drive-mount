@@ -1,0 +1,7 @@
+---
+# defaults file for google-drive-mount
+bws_gdrive_client_id: 90de543c-d227-4ec5-aae5-b1d0017ebac2
+bws_gdrive_client_secret: cfd897e8-a46e-4a15-af06-b1d0017ed791
+bws_gdrive_token: 0eb7a9e7-4f15-4c0b-a57b-b1d0017eee45
+bws_gdrive_password: 64432a73-ea2d-4a32-a56c-b1d001808f45
+bws_gdrive_salt: f60ffcc7-e4f4-493b-8fef-b1d001809d7d

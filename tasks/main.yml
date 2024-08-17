@@ -1,0 +1,107 @@
+---
+- name: "Setup rclone google drive"
+  become: true
+  block:
+    # These secrets are generated per instructions: https://rclone.org/drive/#making-your-own-client-id
+
+    # kvk-rclonedrive-<env>-<site>-clientid
+    - name: "Get secret from BWS: client_id"
+      when: gdrive_client_id is not defined
+      ansible.builtin.set_fact:
+        gdrive_client_id: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_client_id).value }}"
+
+    # kvk-rclonedrive-<env>-<site>-clientsecret
+    - name: "Get secret from BWS: client_secret"
+      when: gdrive_client_secret is not defined
+      ansible.builtin.set_fact:
+        gdrive_client_secret: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_client_secret).value }}"
+
+    # kvk-rclonedrive-<env>-<site>-token
+    - name: "Get secret from BWS: token"
+      when: gdrive_token is not defined
+      ansible.builtin.set_fact:
+        # The extra space is necessary to prevent ansible from interpreting the JSON token as variables rather than a string
+        gdrive_token: " {{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_token).value }}"
+
+    # These secrets are generated using manual construction of an rclone config
+
+    # kvk-rclonedrive-<env>-<site>-password
+    - name: "Get secret from BWS: password"
+      when: gdrive_password is not defined
+      ansible.builtin.set_fact:
+        gdrive_password: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_password).value }}"
+
+    # kvk-rclonedrive-<env>-<site>-salt
+    - name: "Get secret from BWS: salt"
+      when: gdrive_password_salt is not defined
+      ansible.builtin.set_fact:
+        gdrive_password_salt: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_salt).value }}"
+
+    # Check required vars
+    - name: "Check that the required vars are supplied"
+      ansible.builtin.assert:
+        that:
+          - "{{ item is defined }}"
+          - "{{ item is string }}"
+          - "{{ item | length > 0 }}"
+      loop:
+        - gdrive_client_id
+        - gdrive_client_secret
+        - gdrive_token
+        - gdrive_password
+        - gdrive_password_salt
+        - site
+        - deploy_env
+    - name: "Check that folder_names is a non-empty list"
+      ansible.builtin.assert:
+        that:
+          - folder_names is defined
+          - folder_names is iterable
+          - folder_names | length > 0
+
+    # Gdrive Path
+    # rclone prefix indicates to readers that these subdirs are managed by rclone
+    # /rclone/<site>/<deploy_env>/<folder_name>/
+
+    # Linux Path
+    # /mnt/gdrive/rclone/<site>/<deploy_env>/<folder name>/<subcategory if mulitple initiators>
+    # /mnt/gdrive/rclone/<site>/<deploy_env>/proxmox_vm_backups/<hostname>/
+    # /mnt/gdrive/rclone/<site>/<deploy_env>/proxmox_lxc_backups/<hostname>/
+    # /mnt/gdrive/rclone/<site>/<deploy_env>/proxmox_etc_backups/<hostname>/
+    # /mnt/gdrive/rclone/<site>/<deploy_env>/kubernetes_backups/<application>/
+    # /mnt/gdrive/rclone/<site>/<deploy_env>/homeassistant_backups/
+    # /mnt/gdrive/rclone/<site>/<deploy_env>/opnsense_backups/
+
+    - name: "Make the corresponding linux directory"
+      ansible.builtin.file:
+        path: "/mnt/gdrive/rclone/{{ site }}/{{ deploy_env }}/{{ item }}"
+        state: directory
+        mode: "0700"
+        owner: root
+        group: root
+      loop: "{{ folder_names }}"
+
+    - name: Read variables
+      set_fact:
+        rclone_configs: "{{ lookup('template', 'rclone_configs.yml.j2') | from_yaml }}"
+    - name: Read variables
+      set_fact:
+        rclone_mounts: "{{ lookup('template', 'rclone_mounts.yml.j2') | from_yaml }}"
+
+    # /root/.config/rclone/rclone.conf
+    # The corresponding folders in the google drive automatically get created
+    - name: Install and configure rclone
+      ansible.builtin.include_role:
+        name: stefangweichinger.ansible_rclone
+
+    # Check that rclone service for the mount has been created.
+    - name: Restart rclone
+      ansible.builtin.systemd:
+        name: "rclone-mount@{{ item | replace('/', '__') }}.service"
+        state: restarted
+      loop: "{{ folder_names }}"
+
+  rescue:
+    - name: "Google Drive Mount role failed"
+      ansible.builtin.set_fact:
+        task_failed: true

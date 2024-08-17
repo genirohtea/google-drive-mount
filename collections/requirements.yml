@@ -1,6 +1,9 @@
 ---
-# Installed using ansible-galaxy install -r collections/requirements.yml
 collections:
-  - name: ansible.utils
+  # Required for molecule testing
+  # v3.10.3 or higher due to python requests issue
+  - name: community.docker
+  # Needed for latest bitwarden_secrets_manager
   - name: community.general
-  - name: ansible.posix
+roles:
+  - name: stefangweichinger.ansible_rclone
