@@ -1,0 +1,14 @@
+[env]
+# Arbitrary Environment Variables
+GENIROHTEA_PROJECT_NAME = 'google-drive-mount'
+
+[tools]
+# Specify tooling versions
+python = '3.12.2'
+
+[plugins]
+# specify a custom repo url
+# note this will only be used if the plugin does not already exist
+
+
+[settings]
