@@ -1,0 +1,15 @@
+---
+driver:
+  name: docker
+platforms:
+  - name: instance
+    pre_build_image: true
+    image: python:3.12.2-bookworm # Proxmox 8.1 is currently based on bookworm
+    # Use proxmox since that is probably where this mount will most commonly be used
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_VERBOSITY: 1
+  inventory:
+    links:
+      group_vars: ../../group_vars
