@@ -4,6 +4,8 @@ collections:
   # v3.10.3 or higher due to python requests issue
   - name: community.docker
   # Needed for latest bitwarden_secrets_manager
+  # Use this one instead of community since it uses bitwarden-sdk which is easier to CI
   - name: community.general
+  - name: bitwarden.secrets
 roles:
   - name: stefangweichinger.ansible_rclone

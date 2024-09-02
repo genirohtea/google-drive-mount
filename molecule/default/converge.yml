@@ -21,6 +21,12 @@
       when: ansible_facts.distribution == 'Fedora'
       changed_when: false
 
+    - name: Install bws sdk
+      ansible.builtin.pip:
+        name: bitwarden-sdk
+        state: present
+      delegate_to: localhost
+
     - name: Show ansible version
       ansible.builtin.debug:
         msg: "Ansible Version: {{ ansible_version.full }}"
