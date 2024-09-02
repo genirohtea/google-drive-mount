@@ -8,20 +8,20 @@
     - name: "Get secret from BWS: client_id"
       when: gdrive_client_id is not defined
       ansible.builtin.set_fact:
-        gdrive_client_id: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_client_id).value }}"
+        gdrive_client_id: "{{ lookup('bitwarden.secrets.lookup', bws_gdrive_client_id) }}"
 
     # kvk-rclonedrive-<env>-<site>-clientsecret
     - name: "Get secret from BWS: client_secret"
       when: gdrive_client_secret is not defined
       ansible.builtin.set_fact:
-        gdrive_client_secret: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_client_secret).value }}"
+        gdrive_client_secret: "{{ lookup('bitwarden.secrets.lookup', bws_gdrive_client_secret) }}"
 
     # kvk-rclonedrive-<env>-<site>-token
     - name: "Get secret from BWS: token"
       when: gdrive_token is not defined
       ansible.builtin.set_fact:
         # The extra space is necessary to prevent ansible from interpreting the JSON token as variables rather than a string
-        gdrive_token: " {{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_token).value }}"
+        gdrive_token: " {{ lookup('bitwarden.secrets.lookup', bws_gdrive_token) }}"
 
     # These secrets are generated using manual construction of an rclone config
 
@@ -29,13 +29,13 @@
     - name: "Get secret from BWS: password"
       when: gdrive_password is not defined
       ansible.builtin.set_fact:
-        gdrive_password: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_password).value }}"
+        gdrive_password: "{{ lookup('bitwarden.secrets.lookup', bws_gdrive_password) }}"
 
     # kvk-rclonedrive-<env>-<site>-salt
     - name: "Get secret from BWS: salt"
       when: gdrive_password_salt is not defined
       ansible.builtin.set_fact:
-        gdrive_password_salt: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_salt).value }}"
+        gdrive_password_salt: "{{ lookup('bitwarden.secrets.lookup', bws_gdrive_salt) }}"
 
     # Check required vars
     - name: "Check that the required vars are supplied"
@@ -91,11 +91,13 @@
     # /root/.config/rclone/rclone.conf
     # The corresponding folders in the google drive automatically get created
     - name: Install and configure rclone
+      tags: molecule-idempotence-notest
       ansible.builtin.include_role:
         name: stefangweichinger.ansible_rclone
 
     # Check that rclone service for the mount has been created.
     - name: Restart rclone
+      tags: molecule-idempotence-notest
       ansible.builtin.systemd:
         name: "rclone-mount@{{ item | replace('/', '__') }}.service"
         state: restarted
