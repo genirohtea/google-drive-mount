@@ -23,7 +23,8 @@
 
     - name: Install bws sdk
       ansible.builtin.pip:
-        name: bitwarden-sdk
+        # 0.1.1 has error: 'BitwardenClient' object has no attribute 'access_token_login'
+        name: bitwarden-sdk==0.1.0
         state: present
       delegate_to: localhost
 

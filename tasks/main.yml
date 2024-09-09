@@ -64,7 +64,7 @@
     # /rclone/<site>/<deploy_env>/<folder_name>/
 
     # Linux Path
-    # /mnt/gdrive/rclone/<site>/<deploy_env>/<folder name>/<subcategory if mulitple initiators>
+    # /mnt/gdrive/rclone/<site>/<deploy_env>/<folder name>/<subcategory if multiple initiators>
     # /mnt/gdrive/rclone/<site>/<deploy_env>/proxmox_vm_backups/<hostname>/
     # /mnt/gdrive/rclone/<site>/<deploy_env>/proxmox_lxc_backups/<hostname>/
     # /mnt/gdrive/rclone/<site>/<deploy_env>/proxmox_etc_backups/<hostname>/
