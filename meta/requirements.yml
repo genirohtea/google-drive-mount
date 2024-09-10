@@ -3,9 +3,9 @@ collections:
   # Required for molecule testing
   # v3.10.3 or higher due to python requests issue
   - name: community.docker
-  # Needed for latest bitwarden_secrets_manager
-  # Use this one instead of community since it uses bitwarden-sdk which is easier to CI
-  - name: community.general
+    version: "3.12.1"
   - name: bitwarden.secrets
+    version: "1.0.0"
 roles:
   - name: stefangweichinger.ansible_rclone
+    version: "0.2.0"
