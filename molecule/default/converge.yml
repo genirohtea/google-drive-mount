@@ -21,13 +21,28 @@
       when: ansible_facts.distribution == 'Fedora'
       changed_when: false
 
-    - name: Install bws sdk
-      ansible.builtin.pip:
-        # 0.1.1 has error: 'BitwardenClient' object has no attribute 'access_token_login'
-        name: bitwarden-sdk==0.1.0
-        state: present
+    # community.general.bitwarden_secrets_manager runs on the Ansible
+    # controller and shells out to the `bws` CLI, so ensure it is
+    # installed there (skipped when a `bws` binary is already present).
+    - name: Check whether the bws CLI is already installed
+      ansible.builtin.command: bws --version
+      register: bws_installed
+      changed_when: false
+      failed_when: false
       delegate_to: localhost
       become: false
+
+    - name: Install the bws CLI
+      when: bws_installed.rc != 0
+      ansible.builtin.unarchive:
+        src: "https://github.com/bitwarden/sdk-sm/releases/download/bws-v{{ bws_version }}/bws-x86_64-unknown-linux-gnu-{{ bws_version }}.zip"
+        dest: /usr/local/bin
+        remote_src: true
+        mode: "0755"
+      vars:
+        bws_version: "2.1.0"
+      delegate_to: localhost
+      become: true
 
     - name: Show ansible version
       ansible.builtin.debug:
