@@ -1,0 +1,12 @@
+---
+# vars file for google-drive-mount
+
+# Override the upstream stefangweichinger.ansible_rclone default of
+# rclone_arch: amd64, which fails on non-x86_64 hosts with Exec format error.
+rclone_arch_map:
+  x86_64: amd64
+  aarch64: arm64
+  armv7l: arm
+  armv6l: arm
+  i686: "386"
+rclone_arch: "{{ rclone_arch_map.get(ansible_architecture, 'amd64') }}"
