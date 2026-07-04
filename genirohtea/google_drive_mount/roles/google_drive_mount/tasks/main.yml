@@ -8,20 +8,20 @@
     - name: "Get secret from BWS: client_id"
       when: gdrive_client_id is not defined
       ansible.builtin.set_fact:
-        gdrive_client_id: "{{ lookup('bitwarden.secrets.lookup', bws_gdrive_client_id) }}"
+        gdrive_client_id: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_client_id).value }}"
 
     # kvk-rclonedrive-<env>-<site>-clientsecret
     - name: "Get secret from BWS: client_secret"
       when: gdrive_client_secret is not defined
       ansible.builtin.set_fact:
-        gdrive_client_secret: "{{ lookup('bitwarden.secrets.lookup', bws_gdrive_client_secret) }}"
+        gdrive_client_secret: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_client_secret).value }}"
 
     # kvk-rclonedrive-<env>-<site>-token
     - name: "Get secret from BWS: token"
       when: gdrive_token is not defined
       ansible.builtin.set_fact:
         # The extra space is necessary to prevent ansible from interpreting the JSON token as variables rather than a string
-        gdrive_token: " {{ lookup('bitwarden.secrets.lookup', bws_gdrive_token) }}"
+        gdrive_token: " {{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_token).value }}"
 
     # These secrets are generated using manual construction of an rclone config
 
@@ -29,13 +29,13 @@
     - name: "Get secret from BWS: password"
       when: gdrive_password is not defined
       ansible.builtin.set_fact:
-        gdrive_password: "{{ lookup('bitwarden.secrets.lookup', bws_gdrive_password) }}"
+        gdrive_password: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_password).value }}"
 
     # kvk-rclonedrive-<env>-<site>-salt
     - name: "Get secret from BWS: salt"
       when: gdrive_password_salt is not defined
       ansible.builtin.set_fact:
-        gdrive_password_salt: "{{ lookup('bitwarden.secrets.lookup', bws_gdrive_salt) }}"
+        gdrive_password_salt: "{{ lookup('community.general.bitwarden_secrets_manager', bws_gdrive_salt).value }}"
 
     # Check required vars
     - name: "Check that the required vars are supplied"
