@@ -73,6 +73,7 @@
     # /mnt/gdrive/rclone/<site>/<deploy_env>/opnsense_backups/
 
     - name: "Make the corresponding linux directory"
+      tags: molecule-idempotence-notest
       ansible.builtin.file:
         path: "/mnt/gdrive/rclone/{{ site }}/{{ deploy_env }}/{{ item }}"
         state: directory

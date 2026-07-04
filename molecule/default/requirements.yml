@@ -1,0 +1,12 @@
+---
+collections:
+  - source: ./genirohtea/google_drive_mount
+    type: dir
+  # v3.10.3 or higher due to python requests issue
+  - name: community.docker
+    version: "3.12.1"
+  - name: bitwarden.secrets
+    version: "1.0.0"
+roles:
+  - name: stefangweichinger.ansible_rclone
+    version: "0.2.6"
