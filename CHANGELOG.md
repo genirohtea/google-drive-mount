@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/genirohtea/google-drive-mount/compare/v1.0.0...v1.0.1) (2026-07-04)
+
+
+### Bug Fixes
+
+* **ansible galaxy:** fixed dependent roles and collections for correct install ([fcd93c3](https://github.com/genirohtea/google-drive-mount/commit/fcd93c3ac24f15376d75d4f6875afe7114939341))
+* **github actions:** update galaxy release process for new repo structure ([a8893f4](https://github.com/genirohtea/google-drive-mount/commit/a8893f4f76a85e3212c801749e7a80098ce0fdc2))
+
 ## 1.0.0 (2024-09-02)
 
 
